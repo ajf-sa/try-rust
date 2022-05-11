@@ -4,7 +4,11 @@ struct Employee {
     age:u32
 }
 
+
 impl Employee {
+    fn get_instance(name:String,company:String,age:u32) -> Employee {
+        Employee { name: name, company: company, age: age }
+    }
     fn display(&self) {
         println!("Name is :{} company is {} age is {}",self.name,self.company,self.age);
     }
@@ -15,12 +19,10 @@ fn main() {
         name:String::from("alfuhigi"),
         age:99
     };
-    let emp2 = Employee{
-        company:String::from("aramco"),
-        name:String::from("ali"),
-        age:102
-    };
-    
+    let emp2 = Employee::get_instance( String::from("aramco"),
+    String::from("alfuhigi"),
+    99);
+
 emp1.display();
     
 let elder = who_is_elder(emp1,emp2);
