@@ -3,6 +3,12 @@ struct Employee {
     company:String,
     age:u32
 }
+
+impl Employee {
+    fn display(&self) {
+        println!("Name is :{} company is {} age is {}",self.name,self.company,self.age);
+    }
+}
 fn main() {
     let emp1 = Employee{
         company:String::from("aramco"),
@@ -14,6 +20,8 @@ fn main() {
         name:String::from("ali"),
         age:102
     };
+    
+emp1.display();
     
 let elder = who_is_elder(emp1,emp2);
 println!("elder is:");
