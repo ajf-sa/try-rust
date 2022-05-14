@@ -16,4 +16,6 @@ fn main() {
     f.email = FreeEmail(EN).fake();
     f.phone = PhoneNumber(EN).fake();
     println!("{} {} {} {}", f.id, f.email, f.phone, f.password);
+    let mut space = "  ";
+    space = space.len().to_string().as_str();
 }
