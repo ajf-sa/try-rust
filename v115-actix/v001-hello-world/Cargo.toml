@@ -7,3 +7,4 @@ version = "0.1.0"
 
 [dependencies]
 actix-web = "4"
+futures-util = "0.3.21"
