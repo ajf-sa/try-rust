@@ -22,7 +22,7 @@ fn main() -> Result<()> {
         name: "Steven".to_string(),
         age: 3,
     };
-    for i in 1..100000 {
+    for i in 1..100 {
         conn.execute(
             "INSERT INTO person (name, age)
             VALUES (?1, ?2)",
