@@ -7,7 +7,7 @@ fn main() {
     println!("sum is {}", n);
     let mut no: i32 = 5;
     // to_zero(&mut no);
-    back_fn(&mut no);
+    back_fn(&mut no)(&mut no);
     println!("The value of no is:{}", no);
 }
 // defining function
