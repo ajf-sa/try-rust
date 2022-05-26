@@ -1,9 +1,9 @@
 fn main(){
-    // a list of nos
-    let v = vec![10,20,30];
-    print_vector(&v);
-    println!("{}",v[0]); 
+  let s1 = String::from("hello"); 
+  print_string(&s1);
+  println!("{}", s1);
+
  }
- fn print_vector(x:&Vec<i32>){
-    println!("Inside print_vector function {:?}",x);
+ fn print_string(x:&String){
+    println!("{}",x);
  }
