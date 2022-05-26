@@ -1,6 +1,10 @@
 fn main(){
-  let s1 = String::from("hello"); 
+  let mut s1 = String::from("hello"); 
+  
+  s1.push_str("string");
+
   print_string(&s1);
+
   println!("{}", s1);
 
  }
