@@ -6,8 +6,16 @@ struct Person {
     name: String,
     age: i32,
 }
+
+fn open_my_db() -> Result<Connection> {
+    let path = "./my_db.db";
+    let db = Connection::open(&path)?;
+    println!("{}", db.is_autocommit());
+    Ok(db)
+}
+
 fn main() -> Result<()> {
-    let conn = Connection::open("test.db").unwrap();
+    let conn = open_my_db()?;
     conn.execute(
         "CREATE TABLE IF NOT EXISTS person (
             id INTEGER PRIMARY KEY,
@@ -22,7 +30,7 @@ fn main() -> Result<()> {
         name: "Steven".to_string(),
         age: 3,
     };
-    for i in 1..100 {
+    for _ in 1..100 {
         conn.execute(
             "INSERT INTO person (name, age)
             VALUES (?1, ?2)",
@@ -34,8 +42,8 @@ fn main() -> Result<()> {
     let mut stmt = conn.prepare("SELECT id, name, age FROM person")?;
     let person_iter = stmt.query_map([], |row| {
         Ok(Person {
-            id: row.get(0)?,
-            name: row.get(1)?,
+            id: row.get(0).unwrap(),
+            name: row.get(1).unwrap(),
             age: row.get(2)?,
         })
     })?;
