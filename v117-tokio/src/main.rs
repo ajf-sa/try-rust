@@ -1,9 +1,7 @@
 use response::{Response, status};
-use tokio::net::{TcpStream, TcpListener};
-use tokio::io::{AsyncWriteExt, AsyncReadExt};
+use tokio::net::{ TcpListener};
+use tokio::io::{ AsyncReadExt};
 use std::error::Error;
-use tokio::io::BufWriter;
-
 mod response;
 
 pub enum Method {
@@ -30,9 +28,33 @@ async fn main() -> Result<(),Box<dyn Error>> {
             res.sendfile(400,status(400), "static/__400.html").await;
            return Ok(());
         }
-        let mut res = Response::new(s);
-        res.sendfile(200, status(200), "static/index.html").await;
-        // handle(s,).await;
+        match (parts[0], parts[1]) {
+            ("GET",path) => {
+                match path {
+                    "/" => {
+                        let mut res = Response::new(s);
+                        res.sendfile(200, status(200), "static/index.html").await;
+
+                    }
+                    "/blog" =>{
+                        let mut res = Response::new(s);
+                        res.sendfile(200, status(200), "static/blog/index.html").await; 
+                    }
+                    _ =>{
+                        let mut res = Response::new(s);
+                        res.sendfile(200, status(200), "static/__404.html").await;
+                    }
+                }
+              
+               
+            }
+            _ => {
+                let mut res = Response::new(s);
+                res.sendfile(200, status(200), "static/__404.html").await;
+               
+            }
+        }
+       
       },
       Err(err) => { println!("error: {}", err); break; },
 
