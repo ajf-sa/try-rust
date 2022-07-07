@@ -1,6 +1,7 @@
 use response::{Response, status};
 use tokio::net::{ TcpListener};
 use tokio::io::{ AsyncReadExt};
+use regex::Regex;
 use std::error::Error;
 mod response;
 
@@ -28,24 +29,45 @@ async fn main() -> Result<(),Box<dyn Error>> {
             res.sendfile(400,status(400), "static/__400.html").await;
            return Ok(());
         }
+       
         match (parts[0], parts[1]) {
+         
             ("GET",path) => {
-                match path {
-                    "/" => {
-                        let mut res = Response::new(s);
-                        res.sendfile(200, status(200), "static/index.html").await;
+                // match path {
+                //     "/" => {
+                //         let mut res = Response::new(s);
+                //         res.sendfile(200, status(200), "static/index.html").await;
 
-                    }
-                    "/blog" =>{
-                        let mut res = Response::new(s);
-                        res.sendfile(200, status(200), "static/blog/index.html").await; 
-                    }
-                    _ =>{
-                        let mut res = Response::new(s);
-                        res.sendfile(200, status(200), "static/__404.html").await;
-                    }
+                //     }
+                //     "/blog" =>{
+                //         let mut res = Response::new(s);
+                //         res.sendfile(200, status(200), "static/blog/index.html").await; 
+                //     }
+                //     "" => {
+                        
+                //     },
+                //     _ =>{
+                //         let mut res = Response::new(s);
+                //         res.sendfile(200, status(200), "static/__404.html").await;
+                //     }
+                // }
+                let mut res = Response::new(s);
+                let r = Regex::new("^/$").unwrap();
+                if r.is_match(path) {
+                    res.sendfile(200, status(200), "static/index.html").await; 
                 }
-              
+
+               let r = Regex::new("^/blog$").unwrap();
+               if r.is_match(path) {
+                res.sendfile(200, status(200), "static/blog/index.html").await;   
+                }
+                
+                let r = Regex::new("^/blog/([0-9a-zA-Z]{1,30})$").unwrap();
+                if r.is_match(path) {
+                    println!("{}",path[6..].to_string());
+                     res.sendfile(200, status(200), "static/blog/index.html").await;  
+                }
+               res.sendfile(200, status(200), "static/__404.html").await; 
                
             }
             _ => {

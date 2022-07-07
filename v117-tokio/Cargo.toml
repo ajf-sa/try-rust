@@ -7,3 +7,4 @@ version = "0.1.0"
 
 [dependencies]
 tokio = {version = "1.18.2", features = ["full"]}
+regex = "1.6.0"
