@@ -1,4 +1,4 @@
-use tide::Request;
+use tide::{Middleware, Next, Request};
 
 pub async fn order_shoes(mut req: Request<()>) -> tide::Result {
     println!("{}", req.host().unwrap());
