@@ -41,28 +41,4 @@ async fn main() -> Result<(),Box<dyn Error>> {
  Ok(())
 }
 
-// async fn handle(stream: TcpStream)  {
-//     let mut b:BufWriter<TcpStream> = BufWriter::new(stream); 
-//     b.write(format!("HTTP/1.1 {} {}\r\n", 200, "OK").as_bytes()).await;
-//     b.write(format!("Content-Type: {}; charset=utf-8","text/html").as_bytes()).await;
-
-//     let body = "
-//     <html>
-//     <head>
-//     <title>homepage</title>
-//     </head>
-//     <body>
-//     <h1>hi</h1>
-//     </body>
-//     </html>
-//     ".trim();
-    
-//     b.write(format!("Content-Length:{} \r\n",body.len().to_string().as_str()).as_bytes()).await;
-//     b.write(format!("Connection:Keep-Alive\r\n").as_bytes()).await;
-//     b.write(format!("Keep-Alive:timeout=5, max=100 \r\n").as_bytes()).await; 
-//     b.write(format!("\n").as_bytes()).await;
-//     b.write(format!("{}",body).as_bytes()).await;
-//     b.flush().await;
-    
-// }
 
