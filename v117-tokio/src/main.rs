@@ -35,21 +35,29 @@ async fn main() -> Result<(), Box<dyn Error>> {
                     res.sendfile(400, status(400), "static/__400.html").await;
                     return Ok(());
                 }
-
+                
                 match (parts[0], parts[1]) {
-                    ("GET", path) => {
+                    ("GET",  path) => {
+                        let mut  path = path.split("?").collect::<Vec<&str>>()[0];
+                        if path.len()  >  1{
+
+                    
+                        if path.chars().last().unwrap() == '/' {
+                            let mut chars = path.chars();
+                            chars.next_back();
+                            path = chars.as_str();
+                        }
+                    }
                         let mut res = Response::new(s);
                         let r = Regex::new("^/$").unwrap();
                         if r.is_match(path) {
                             res.sendfile(200, status(200), "static/index.html").await;
                         }
-
                         let r = Regex::new("^/blog$").unwrap();
                         if r.is_match(path) {
                             res.sendfile(200, status(200), "static/blog/index.html")
                                 .await;
                         }
-
                         let r = Regex::new("^/blog/([0-9a-zA-Z]{1,30})$").unwrap();
                         if r.is_match(path) {
                             println!("{}", path[6..].to_string());
