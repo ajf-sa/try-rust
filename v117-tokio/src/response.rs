@@ -5,12 +5,13 @@ use tokio::io::{AsyncReadExt, AsyncWriteExt, BufWriter};
 use tokio::net::TcpStream;
 
 pub struct Response {
-    writer: BufWriter<TcpStream>,
+   pub writer: BufWriter<TcpStream>,
 }
 
 pub fn status(code: i32) -> &'static str {
     match code {
         200 => "OK",
+        307 => "TEMPORARY REDIRECT",
         400 => "BAD REQUEST",
         404 => "NOT FOUND",
         _ => "NOT IMPLEMENTED",
@@ -90,6 +91,7 @@ impl Response {
     pub async fn sendfile(&mut self, code: i32, status: &str, path: &str) -> Result<()> {
         self.write_status(code, status).await?;
         self.write_file(path).await?;
-        self.flush().await
+        // self.flush().await
+        Ok(())
     }
 }
