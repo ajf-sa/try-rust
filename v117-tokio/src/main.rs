@@ -33,7 +33,7 @@ async fn main() -> Result<(), Box<dyn Error>> {
                 let parts = req[0].split(" ").collect::<Vec<&str>>();
                 if parts.len() < 2 {
                     let mut res = Response::new(s);
-                    res.write_status(400, status(400)).await;
+                    res.write_status(400).await;
                     res.sendfile( "static/__400.html").await;
                     return Ok(());
                 }
@@ -51,29 +51,29 @@ async fn main() -> Result<(), Box<dyn Error>> {
                         let mut res = Response::new(s);
                         let r = Regex::new("^/$").unwrap();
                         if r.is_match(path) {
-                            res.write_status(200, status(200)).await;
+                            res.write_status(200).await;
                             res.write_header("Set-Cookie", "id=woiejf;").await;
                             res.sendfile("static/index.html").await;
                         }
                         let r = Regex::new("^/blog$").unwrap();
                         if r.is_match(path) {
-                            res.write_status(200, status(200)).await;
+                            res.write_status(200).await;
                             res.sendfile("static/blog/index.html")
                                 .await;
                         }
                         let r = Regex::new("^/blog/([0-9a-zA-Z]{1,30})$").unwrap();
                         if r.is_match(path) {
                             println!("{}", path[6..].to_string());
-                            res.write_status(200, status(200)).await;
+                            res.write_status(200).await;
                             res.sendfile("static/blog/index.html")
                                 .await;
                         }
-                        res.write_status(404, status(404)).await;
+                        res.write_status(404).await;
                         res.sendfile("static/__404.html").await;
                     }
                     _ => {
                         let mut res = Response::new(s);
-                        res.write_status(404, status(404)).await;
+                        res.write_status(404).await;
                         res.sendfile("static/__404.html").await;
                     }
                 }

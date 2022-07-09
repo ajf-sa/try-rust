@@ -24,9 +24,9 @@ impl Response {
             writer: BufWriter::new(client),
         }
     }
-    pub async fn write_status(&mut self, code: i32, status: &str) -> Result<usize> {
+    pub async fn write_status(&mut self, code: i32) -> Result<usize> {
         self.writer
-            .write(format!("HTTP/1.1 {} {}\r\n", code, status).as_bytes())
+            .write(format!("HTTP/1.1 {} {}\r\n", code, status(code)).as_bytes())
             .await
     }
     pub async fn write_header(&mut self, key: &str, val: &str) -> Result<usize> {
