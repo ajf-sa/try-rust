@@ -30,6 +30,7 @@ async fn main() -> Result<(), Box<dyn Error>> {
                     .unwrap()
                     .split("\r\n")
                     .collect::<Vec<&str>>();
+
                 let parts = req[0].split(" ").collect::<Vec<&str>>();
                 if parts.len() < 2 {
                     let mut res = Response::new(s);
@@ -49,10 +50,10 @@ async fn main() -> Result<(), Box<dyn Error>> {
                             }
                         }
                         let mut res = Response::new(s);
+                      
                         let r = Regex::new("^/$").unwrap();
                         if r.is_match(path) {
                             res.write_status(200).await;
-                            res.write_header("Set-Cookie", "id=woiejf;").await;
                             res.sendfile("static/index.html").await;
                         }
                         let r = Regex::new("^/blog$").unwrap();

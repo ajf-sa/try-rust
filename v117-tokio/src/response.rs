@@ -1,9 +1,10 @@
+use httpdate::fmt_http_date;
 use tokio::fs::File;
 use tokio::io::BufReader;
 use tokio::io::Result;
 use tokio::io::{AsyncReadExt, AsyncWriteExt, BufWriter};
 use tokio::net::TcpStream;
-
+use std::time::SystemTime;
 pub struct Response {
     pub writer: BufWriter<TcpStream>,
 }
@@ -27,7 +28,8 @@ impl Response {
     pub async fn write_status(&mut self, code: i32) -> Result<usize> {
         self.writer
             .write(format!("HTTP/1.1 {} {}\r\n", code, status(code)).as_bytes())
-            .await
+            .await;
+            self.write_header("Date", fmt_http_date(SystemTime::now()).as_str()).await
     }
     pub async fn write_header(&mut self, key: &str, val: &str) -> Result<usize> {
         self.writer
@@ -36,6 +38,10 @@ impl Response {
     }
 
     pub async fn write_body(&mut self, val: &[u8]) -> Result<usize> {
+      
+        self.write_header("Server", "AJF").await;
+        
+        self.write_header("Connection", "keep-alive").await;
         self.write_header("Content-Length", val.len().to_string().as_str())
             .await?;
         self.writer.write(b"\n").await?;
@@ -60,9 +66,7 @@ impl Response {
     }
 
     pub async fn write_file(&mut self, mut path: &str) -> Result<usize> {
-        self.write_header("Connection", "Keep-Alive").await?;
-        self.write_header("Keep-Alive", "timeout=5, max=100")
-            .await?;
+       
         self.write_header(
             "Content-Type",
             format!("{}; charset=utf-8", self.mine_type(path)).as_str(),
