@@ -88,10 +88,10 @@ impl Response {
     pub async fn flush(&mut self) -> Result<()> {
         self.writer.flush().await
     }
-    pub async fn sendfile(&mut self, code: i32, status: &str, path: &str) -> Result<()> {
-        self.write_status(code, status).await?;
+    pub async fn sendfile(&mut self, path: &str) -> Result<()> {
         self.write_file(path).await?;
-        // self.flush().await
-        Ok(())
+        self.flush().await
+       
     }
+   
 }
