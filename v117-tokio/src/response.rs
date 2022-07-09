@@ -5,7 +5,7 @@ use tokio::io::{AsyncReadExt, AsyncWriteExt, BufWriter};
 use tokio::net::TcpStream;
 
 pub struct Response {
-   pub writer: BufWriter<TcpStream>,
+    pub writer: BufWriter<TcpStream>,
 }
 
 pub fn status(code: i32) -> &'static str {

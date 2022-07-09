@@ -11,10 +11,11 @@ pub enum Method {
     PUT,
     DELETE,
 }
+// comment
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn Error>> {
-    let l = TcpListener::bind("0.0.0.0:8082").await?;
+    let l = TcpListener::bind("127.0.0.1:8082").await?;
     loop {
         let (mut s, _) = l.accept().await?;
         let mut buf = [0; 1024];
@@ -35,27 +36,21 @@ async fn main() -> Result<(), Box<dyn Error>> {
                     res.sendfile(400, status(400), "static/__400.html").await;
                     return Ok(());
                 }
-                
+
                 match (parts[0], parts[1]) {
-                    ("GET",  path) => {
-                        let mut  path = path.split("?").collect::<Vec<&str>>()[0];
-                        if path.len()  >  1{
-            
-                        if path.chars().last().unwrap() == '/' {
-                            let mut chars = path.chars();
-                            chars.next_back();
-                            path = chars.as_str();
+                    ("GET", path) => {
+                        let mut path = path.split("?").collect::<Vec<&str>>()[0];
+                        if path.len() > 1 {
+                            if path.chars().last().unwrap() == '/' {
+                                let mut chars = path.chars();
+                                chars.next_back();
+                                path = chars.as_str();
+                            }
                         }
-                    }
                         let mut res = Response::new(s);
                         let r = Regex::new("^/$").unwrap();
                         if r.is_match(path) {
-                            res.write_status(307, status(307)).await?;
-                            res.write_header("Location", "/blog").await?;
-                            res.flush().await;
-                            // res.write_header("Set-Cookie","id=woief;HttpOnly; SameSite=Lax; Secure").await?; 
-                            // res.write_file("static/index.html").await?;
-                            // res.flush().await?;
+                            res.sendfile(200, status(200), "static/index.html").await;
                         }
                         let r = Regex::new("^/blog$").unwrap();
                         if r.is_match(path) {
