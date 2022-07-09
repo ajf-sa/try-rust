@@ -1,5 +1,5 @@
 use regex::Regex;
-use response::{status, Response};
+use response::Response;
 use std::error::Error;
 use tokio::io::AsyncReadExt;
 use tokio::net::TcpListener;
