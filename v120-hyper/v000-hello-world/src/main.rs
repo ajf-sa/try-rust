@@ -61,7 +61,6 @@ mod api {
 
 
     pub fn router() -> Router<Body, io::Error> {
-        // Create a router for API and specify the the handlers.
         Router::builder().middleware(Middleware::post_with_info(protect))
             .get("/admin", protect_page)
             .build()
