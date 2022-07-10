@@ -1,17 +1,20 @@
 use std::convert::Infallible;
 
-use hyper::{Request, Body, Response, header::HeaderValue};
+use hyper::{Request, Body, Response, header::{HeaderValue, CONTENT_LENGTH, CONTENT_TYPE}, StatusCode};
 
 pub async fn index(_r: Request<Body>) -> Result<Response<Body>, Infallible> {
-    let mut res = Response::default();
-    res.headers_mut().insert(hyper::header::SET_COOKIE, HeaderValue::from_str("id=owifjoi").unwrap());
-    *res.body_mut() = Body::from("owijefio");
-    Ok(res)
+   Ok(make_response(&"index", StatusCode::OK))
  }
 
  pub async fn blog(r: Request<Body>) -> Result<Response<Body>, Infallible> {
-    let mut res = Response::default();
-    res.headers_mut().insert(hyper::header::SET_COOKIE, HeaderValue::from_str("id=owifjoi").unwrap());
-    *res.body_mut() = Body::from("owijefio");
-    Ok(res)
+   Ok(make_response(&"blog", StatusCode::OK)) 
  }
+
+ fn make_response(body: &'static str, status: StatusCode) -> Response<Body> {
+   Response::builder()
+       .status(status)
+       .header(CONTENT_LENGTH, body.len() as u64)
+       .header(CONTENT_TYPE, "text/plain")
+       .body(Body::from(body))
+       .expect("Failed to construct response")
+}
