@@ -8,13 +8,8 @@ use routerify::{Router, ext::RequestExt, Middleware, RouterService};
 #[tokio::main(flavor = "current_thread")]
 async fn main() {
    let router = router();
-
-   // Create a Service from the router above to handle incoming requests.
    let service = RouterService::new(router).unwrap();
    let addr = SocketAddr::from(([0,0,0,0],8082));
-   // let make_svc = make_service_fn(|_conn| async {
-   //    Ok::<_,Infallible>(service_fn(route))
-   // });
    let server = Server::bind(&addr).serve(service);
    if let Err(e) = server.await {
       eprintln!("server error: {}", e);
