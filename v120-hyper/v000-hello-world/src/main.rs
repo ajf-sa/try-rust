@@ -18,7 +18,8 @@ async fn shutdown_signal() {
 
 #[tokio::main(flavor = "current_thread")]
 async fn main() {
-    let router = router();
+    println!("{}",num_cpus::get());
+    let router = call();
     let service = RouterService::new(router).unwrap();
     let addr = SocketAddr::from(([0, 0, 0, 0], 8082));
     let server = Server::bind(&addr).serve(service);
@@ -51,7 +52,7 @@ async fn protect(mut res: Response<Body>, req_info: RequestInfo) -> Result<Respo
    Ok(Response::new(Body::from("not allow!")))
 }
 
-fn router() -> Router<Body, io::Error> {
+fn call() -> Router<Body, io::Error> {
     Router::builder()
         .middleware(Middleware::pre(logger_middleware))
         .get("/", index)

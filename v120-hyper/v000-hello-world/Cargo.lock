@@ -476,6 +476,7 @@ name = "v000-hello-world"
 version = "0.1.0"
 dependencies = [
  "hyper",
+ "num_cpus",
  "routerify",
  "tokio",
 ]
