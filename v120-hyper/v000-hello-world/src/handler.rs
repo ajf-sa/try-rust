@@ -1,12 +1,18 @@
-use std::convert::Infallible;
+use std::{convert::Infallible, io};
 
 use hyper::{Request, Body, Response, header::{HeaderValue, CONTENT_LENGTH, CONTENT_TYPE}, StatusCode};
+use routerify::ext::RequestExt;
 
-pub async fn index(_r: Request<Body>) -> Result<Response<Body>, Infallible> {
+pub async fn index(_r: Request<Body>) -> Result<Response<Body>, io::Error> {
    Ok(make_response(&"index", StatusCode::OK))
  }
 
- pub async fn blog(r: Request<Body>) -> Result<Response<Body>, Infallible> {
+ pub async fn blog(r: Request<Body>) -> Result<Response<Body>, io::Error> {
+   let id = match r.param("id") {
+       Some(x) => x,
+       None => "0",
+   }; 
+   println!("{id}");
    Ok(make_response(&"blog", StatusCode::OK)) 
  }
 

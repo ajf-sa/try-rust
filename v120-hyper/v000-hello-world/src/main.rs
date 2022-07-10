@@ -1,32 +1,39 @@
-use std::{net::SocketAddr, convert::Infallible};
+use std::{net::SocketAddr, convert::Infallible, io};
 
 use hyper::{service::{make_service_fn, service_fn}, Response, Body, Request, Server,  Method};
 
 mod handler;
 use handler::{index, blog};
+use routerify::{Router, ext::RequestExt, Middleware, RouterService};
 #[tokio::main(flavor = "current_thread")]
 async fn main() {
+   let router = router();
+
+   // Create a Service from the router above to handle incoming requests.
+   let service = RouterService::new(router).unwrap();
    let addr = SocketAddr::from(([0,0,0,0],8082));
-   let make_svc = make_service_fn(|_conn| async {
-      Ok::<_,Infallible>(service_fn(route))
-   });
-   let server = Server::bind(&addr).serve(make_svc);
+   // let make_svc = make_service_fn(|_conn| async {
+   //    Ok::<_,Infallible>(service_fn(route))
+   // });
+   let server = Server::bind(&addr).serve(service);
    if let Err(e) = server.await {
       eprintln!("server error: {}", e);
   }
 }
 
-async fn route (r : Request<Body>) ->  Result<Response<Body>, Infallible>  {
-   match (r.method(),r.uri().path()) {
-       (&Method::GET,"/") => {
-         index(r).await
-       }
-       (&Method::GET,"/blog") =>{
-         blog(r).await
-       }
-       _ =>  Ok(Response::new(Body::from("404")))
-   }
+
+
+async fn logger_middleware(req: Request<Body>) -> Result<Request<Body>, io::Error> {
+   println!("{} {} {}", req.remote_addr(), req.method(), req.uri().path());
+   Ok(req)
 }
 
-
+fn router() -> Router<Body, io::Error> {
+   Router::builder().middleware(Middleware::pre(logger_middleware))
+   .get("/", index)
+   .get("/blog", blog)
+   .get("/blog/:id", blog)
+   .build()
+   .unwrap()
+}
 
