@@ -8,13 +8,22 @@ use hyper::{
 mod handler;
 use handler::{blog, index, protect_page, login};
 use routerify::{ext::RequestExt, Middleware, Router, RouterService, RequestInfo};
+
+async fn shutdown_signal() {
+   
+    tokio::signal::ctrl_c()
+        .await
+        .expect("failed to install CTRL+C signal handler");
+}
+
 #[tokio::main(flavor = "current_thread")]
 async fn main() {
     let router = router();
     let service = RouterService::new(router).unwrap();
     let addr = SocketAddr::from(([0, 0, 0, 0], 8082));
     let server = Server::bind(&addr).serve(service);
-    if let Err(e) = server.await {
+    let graceful = server.with_graceful_shutdown(shutdown_signal());
+    if let Err(e) = graceful.await {
         eprintln!("server error: {}", e);
     }
 }
