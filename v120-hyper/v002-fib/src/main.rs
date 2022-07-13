@@ -9,10 +9,11 @@ use fib::ib::App;
         println!("this is get  {}",s);
         Ok(())
     });
-
+    
     app.post("/", |s| {
         println!("this is post {}",s);
         Ok(())
     });
+    println!("count : {}", app.count)
 
 }
